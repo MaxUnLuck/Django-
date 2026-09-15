@@ -1,0 +1,85 @@
+@csrf_exemnt
+def users(request):
+    if request.method == 'POST':
+
+        data = {
+            # "user":{},
+        }
+        error422 = {
+            "code": 422,
+            "message": "Некорректные данные"
+        }
+        errors = {
+            'name': [],
+            'email': [],
+            'passwd': [],
+        }
+
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        passwd = request.POST.get('passwd')
+
+        # Валидация Имени
+        if not name or ' ' in name:
+            errors['name'].append('Поле не должно быть пустым или содержать пробелы')
+        elif not name.isalpha() or not name.isascii():
+            errors['name'].append('Имя должно состоять только из латинских букв')
+        elif name.len() > 25:
+            errors['name'].append('Имя не должно быть больше 25 символов')
+
+        # # Валидация Пароля
+	
+	if not passwd or ' ' in passwd:
+            errors['passwd'].append('Поле не должно быть пустым или содержать пробелы')
+        elif passwd.len() >= 8 and passwd.len() < 64:
+            errors['passwd'].append('Пароль не должен быть меньше 8 и больше 64 символов')
+
+        # Валидация Email
+        
+        if not email or ' ' in email:
+            errors['email'].append('Поле не должно быть пустым или содержать пробелы')
+        elif email.len() > 25:
+            errors['email'].append('Почта не должно быть больше 25 символов')
+        is_email = False
+        for i in email:
+	    if i = '@':
+		is_email = True
+        if not is_email:
+	    errors['email'].append('Почта не действительна')
+
+        is_email = False
+        for i in email:
+	    if i = '.':
+		is_email = True
+        if not is_email:
+	    errors['email'].append('Почта не действительна')
+	
+
+        # Очищаем пустые массивы ошибок
+        for key in list(errors.keys()):
+            if not errors[key]:
+                del errors[key]
+
+        if errors:
+            error422['errors'] = errors
+            return JsonResponse(error422, safe=False, status=422)
+
+        hash_password = make_password(password)
+        user = User(name=name, email=email, password=hash_password, is_active=False)
+        user.save()
+
+        # Тут обычно генерируется и отправляется токен подтверждения на почту:
+
+
+        data['user'] = {
+            'name': user.name,
+            'email': user.email
+        }
+
+        return JsonResponse({'code': 201, "message": "Пользователь добавлен", "data": data}, safe=False, status=201)
+
+data = {
+	"name": "max",
+	"email": "max@golda.onion",
+	"passwd": "max123123",
+}
