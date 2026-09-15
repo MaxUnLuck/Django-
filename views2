@@ -1,0 +1,38 @@
+def send_activation_email(user, activation_link: str):
+    subject = "Подтверждение регистрации. Mirro"
+
+    context = {
+        'name': user.name,
+        'activation_link': activation_link
+    }
+
+    html_content = render_to_string('activation_email.html', context)
+
+    # Создаем текстовую версию письма (strip_tags вырежет все HTML-теги из красивого шаблона)
+    # Это нужно на случай, если почтовик пользователя не поддерживает HTML
+    text_content = strip_tags(html_content)
+
+    email = EmailMultiAlternatives(
+        subject=subject,
+        body=text_content,
+        from_email=settings.DEFAULT_FROM_EMAIL, #от кого письмо - от нас, пишем в settings.py
+        to=[user.email]
+    )
+
+    # Прикрепляем красивую HTML-версию
+    email.attach_alternative(html_content, "text/html")
+
+    email.send(fail_silently=False)
+11:08
+http://127.0.0.1:8000/api/email_confirm/?token=sdfg5fg8fgh5dfg5ghj    
+
+path('email_confirm/', email_confirm, name='email_confirm'),
+11:14
+@csrf_exempt
+def email_confirm(request):
+pass
+11:15
+# Тут обычно генерируется и отправляется токен подтверждения на почту:
+        activation_token = generate_token(user, 'activation')
+        activation_link = request.build_absolute_uri(f"{reverse('email_confirm')}?token={activation_token}")
+        send_activation_email(user, activation_link)
