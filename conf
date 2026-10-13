@@ -1,0 +1,49 @@
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+  "logo": {
+    "type": "file", // Указываем, что это файл
+    "source": "~/documents/art6", // Путь к твоему рисунку
+    "padding": { "top": 1, "left": 1, "right": 1 } // Отступы
+  },
+  "display": {
+    "separator": "\t: " // Разделитель между ключом и значением
+  },
+  "modules": [
+    "title",
+    "separator",
+    "os",
+    "kernel",
+    "uptime",
+    "shell",
+    "de",
+    "wm",
+    "terminal",
+    "break",
+    "cpu",
+    "gpu",
+    "memory",
+    "disk",
+    {
+        "type": "battery",
+        "key": "battery"
+    },
+    "break",
+    {
+        "type": "command",
+        "key": "PSQL",
+        "shell": "bash",
+        "text": "pgrep -x postgres >/dev/null && printf '\\033[32m● running\\033[0m' || printf '\\033[31m● stopped\\033[0m'"
+   },
+   {
+        "type": "command",
+        "key": "Django",
+        "shell": "bash",
+        "text": "pgrep -f 'manage.py runserver' >/dev/null && printf '\\033[32m● running\\033[0m' ||
+printf '\\033[31m● stopped\\033[0m'"
+    },
+    "break",
+    "Weather",
+    "break",
+    "colors"
+  ]
+}
